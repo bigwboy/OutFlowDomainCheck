@@ -4,8 +4,8 @@
 #__OUTHOR__:guangguang
 #Email:kevinliu830829@163.com
 import RoadWriteFile
-import  DNS
-def CheckDomain(DomainList):
+import  DNS,IPy,re,xlrd
+def CheckDomain(DomainList,CDNList):
     DNS.DiscoverNameServers()
     reqobj = DNS.Request()
     reqobj.defaults['server']=['113.215.2.222']
@@ -21,7 +21,7 @@ def CheckDomain(DomainList):
         for donequeries in x:
             if donequeries['typename'] == "CNAME":  # 判断是否含有CNAME
                 DomainCname = donequeries['data']
-                CDN=ProcessData(DomainCname)
+                CDN=ProcessData(DomainCname,CDNList)
                 if CDN:
                     Returndomain=domain+','+CDN
                 else:
@@ -49,67 +49,21 @@ def CheckDomain(DomainList):
     pass
 
 
-def ProcessData(cname):
-    types = {
-        "蓝讯": ["ccgslb.net", "ccgslb.com", "ccgslb.com.cn", "chinacache.net", "chinacache.com.cn", "lxsvc.cn"],
-        "网宿": ["glb0.lxdns.com", "ourdvs.com", "ourwebpic.com", "ourwebcdn.com", "ourglb0.com", "ourwebhttps.com",
-               "ourwebat.com"],
-        "快网": ["fastweb.com", "fastwebcdn.com", "cloudcdn.net", "cloudglb.com", "cachecn.com", "cachecn.net",
-               "hadns.net", "hacdn.net"],
-        "帝联": ["dnion.com", "ewcache.com", "globalcdn.cn", "tlgslb.com", "fastcdn.com"],
-        "百度": ["jomodns.com"],
-        "京东": ["jdcdn.com"],
-                "淘宝":["alikunlun.com"
-                        ,"alikunlun.net"
-                        ,"kunlunaq.com"
-                        ,"kunlunar.com"
-                        ,"kunlunca.com"
-                        ,"kunluncan.com"
-                        ,"kunlunea.com"
-                        ,"kunlungem.com"
-                        ,"kunlungr.com"
-                        ,"kunlunhuf.com"
-                        ,"kunlunle.com"
-                        ,"kunlunli.com"
-                        ,"kunlunno.com"
-                        ,"kunlunpi.com"
-                        ,"kunlunra.com"
-                        ,"kunlunsa.com"
-                        ,"kunlunsc.com"
-                        ,"kunlunsl.com"
-                        ,"kunlunso.com"
-                        ,"kunlunta.com"
-                        ,"kunlunvi.com"
-                        ,"kunlunwe.com"
-                        ,"alicdn.com"
-                        ,"tbcache.com"
-                        ],
-        "新浪": ["sinaedge.com"],
-        "爱奇艺": ["dns.iqiyi.com"],
-        "PPTV": ["cloudxns.pptv.com"],
-        "腾讯":["tc.qq.com","tcdn.qq.com","myqcloud.com","dayugslb.com","tencent-cloud.net","tcdnvod.com","tcdnlive.com","cdntip.com"],
-        "沙塔": ["satacdn.com", "sihuacdn.com.cn", "okeycdn.com"],
-        "云帆": ["yflive.net", "yunfancdn.com"],
-        "金山云": ["ks-cdn.com", "ksyuncdn.com"],
-        "白山云": ["qingcdn.com", "bsgslb.com", "trpcdn.net", "bsgslb.cn", "bsclink.cn"],
-        "迅雷星域": ["p2cdn.com", "00cdn.com", "xycdn.com"],
-        "又拍云": ["b0.upaiyun.com", "b0.aicdn.com"],
-        "小米": ["mgslb.com"],
-        "乐视云": ["gslb.lecloud.com", "lsyun.net", "cdnle.com"],
-    }
-    all={}
-    for t in types.iteritems():
-        for hz in t[1]:
-            all[hz]=t[0]
-        for type in all.iteritems():
-            if len(cname.split(type[0]))==2:
-                return type[1]
+
+
+def ProcessData(cname,CDNList):
+    for CDN in CDNList:
+        if len(cname.split(CDN[0]))==2:
+            return CDN[1]
+        pass
     return False
+
 
 
 
 #DEBUG
 if __name__ == "__main__":
     DomainList=RoadWriteFile.ReadFile('jiangsu.txt')
-    check = CheckDomain(DomainList.ReturnData())
+    CDNList=RoadWriteFile.ReadFile('CDN域表.xls')
+    check = CheckDomain(DomainList.ReturnData(),CDNList.ReturnData())
     pass

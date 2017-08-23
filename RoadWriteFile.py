@@ -27,8 +27,8 @@ class ReadFile():
         data = xlrd.open_workbook(self.Filename)
         table = data.sheet_by_index(0)
         nrows = table.nrows
-        for i in range(nrows):
-            self.DomailList.append(i)
+        for i in range(1,nrows):
+            self.DomailList.append(table.row_values(i))
         return self.DomailList
         pass
 def WriteFile():
