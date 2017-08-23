@@ -4,6 +4,8 @@
 #__OUTHOR__:guangguang
 #Email:kevinliu830829@163.com
 import xlrd,re
+import DNS
+import IPy
 class ReadFile():
     def __index__(self,Filename):
         self.Filename=Filename
