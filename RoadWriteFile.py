@@ -36,4 +36,6 @@ def WriteFile():
 
 #DEBUG
 if __name__ == "__main__":
-    DomainList=ReadFile('jiangsu.txt')
+    DomainList=ReadFile('IPlist.xls')
+    domain=DomainList.ReturnData()
+    print domain
